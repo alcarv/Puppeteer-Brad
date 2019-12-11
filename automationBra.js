@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 
 
@@ -24,9 +25,27 @@ const puppeteer = require('puppeteer');
      for (let index = 1; index < 1000; index++) {
           let indice = ("00" + index).slice(-3);
         await page.type('input[id="txtCota"]', indice);
+        const valueCota = await page.$("#txtCota");
+        const pegarCota = await (await valueCota.getProperty('value')).jsonValue();
+        const valueCpf = await page.$("#txtCpfCnpj");
+        const pegarCpf = await (await valueCpf.getProperty('value')).jsonValue();
         await page.click('img[onclick="ValidarForm();"]'); 
+        //console.log(page);
+        await page.setRequestInterception(true);
+        page.on('request', request => {
+            if (request.url() == 'http://bradescoconsorcios.com.br/html/content/restrito/images/canal/txt_resultadodasassembleias.gif'){
+                console.log('TA PASSANDO AQUI OOOOOG')
+                fs.writeFile(`/Users/alefe/Documents/${pegarCpf}.txt`, pegarCota, (err) => {
+                    if (err) throw err;
+                   // process.exit();
+                });
+            } else
+              request.continue();
+          });
         const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page())));
         const newPage = await newPagePromise;
+        await newPage.setRequestInterception(true);
+        //console.log(newPage);
         await newPage.close()
         await page.evaluate( () => document.getElementById("txtCota").value = "");
     };
