@@ -24,9 +24,9 @@ const fs = require('fs');
 
     });
 
-    for (let index = 1; index < 1000; index++) {
+    for (let index = 391; index < 1000; index++) {
         let indice = ("00" + index).slice(-3);
-        await page.waitFor(1000);
+        await page.waitFor(300);
         await page.type('input[id="txtCota"]', indice);
         let valueCota = await page.$("#txtCota");
         let pegarCota = await (await valueCota.getProperty('value')).jsonValue();
@@ -56,7 +56,7 @@ const fs = require('fs');
         try{
             const newPage = await target.page();
 
-            
+
             await newPage.close();
         }catch(e){
             console.log('Error: ' + e);
