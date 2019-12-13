@@ -24,7 +24,7 @@ const fs = require('fs');
 
     });
 
-    for (let index = 391; index < 1000; index++) {
+    for (let index = 1; index < 1000; index++) {
         let indice = ("00" + index).slice(-3);
         await page.waitFor(300);
         await page.type('input[id="txtCota"]', indice);
