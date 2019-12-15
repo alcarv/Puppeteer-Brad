@@ -15,9 +15,8 @@ const puppeteer = require('puppeteer');
     page.setDefaultTimeout(0);
     await page.waitForFunction(() => {
         const group = document.getElementById('txtGrupo').value;
-        const txtCpfCnpj = document.getElementById('txtCpfCnpj').value;
-        if (txtCpfCnpj.length > 10 && group.length < 5) {
-            return txtCpfCnpj && group;
+        if (group.length > 3 && group.length < 5) {
+            return group;
         };
 
     });
@@ -27,7 +26,6 @@ const puppeteer = require('puppeteer');
             let indice = ("00" + index).slice(-3);
             await page.waitFor(500);
             await page.type('input[id="txtCota"]', indice);
-            console.log(indice);
             let valueCpf = await page.$("#txtCpfCnpj");
             let pegarCpf = await (await valueCpf.getProperty('value')).jsonValue();
             await page.click('img[onclick="ValidarForm();"]');
@@ -37,39 +35,14 @@ const puppeteer = require('puppeteer');
                     page.screenshot({path:`${pegarCpf}.png`});
                     request.abort();
                     page.goBack(5000);
-                    //console.log('TA PASSANDO AQUI OOOOOG')
                 } else {
                 request.continue();
-                }/*else
-                    request.continue();
-                    page.setRequestInterception(false);*/
+                }
             });
-            //console.log(page);
-           // await popup();
            await page.waitForSelector('#txtCota')
            await page.waitFor(2000);
            await page.evaluate(() => document.getElementById("txtCota").value = "");
 
         };
     }; 
-
-   /* async function popup() {
-          const targetPromise = new Promise(resolve => browser.once('targetcreated', resolve));
-        const target = await targetPromise;
-        //await newPage.setRequestInterception(true);
-        //console.log(newPage);
-        try{
-            const newPage = await target.page();
-            await newPage.close();
-        }
-        catch(e){
-            console.log('Error: ' + e);
-        }
-        finally {
-            //await page.evaluate(() => document.getElementById("txtCota").value = "");
-            //console.log('AQUIIIIIIIIIIIIIIIIIii')
-            await page.evaluate(() => document.getElementById("txtCota").value = "");
-        }
-    
-    } */
 })();
